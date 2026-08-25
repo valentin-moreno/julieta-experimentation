@@ -1,0 +1,92 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Test
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.11"
+            displayName: "Set up Python"
+
+          - script: curl -LsSf https://astral.sh/uv/install.sh | sh
+            displayName: "Install uv"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv sync --all-groups
+            displayName: "Install dependencies"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv run ruff check .
+            displayName: "Lint"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv run pytest --junitxml=test-results.xml
+            displayName: "Run tests"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv run julieta-validate
+            displayName: "Validate experiment metadata"
+
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: "JUnit"
+              testResultsFiles: "test-results.xml"
+
+  # Solo corre en push a main (no en PRs): asigna IDs reales a cualquier
+  # experiments/IDXX-* que haya llegado a main, y comitea el resultado.
+  # Ver docs/decisions/0003-experiment-id-assignment.md
+  - stage: AssignExperimentIds
+    dependsOn: Build
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: AssignIds
+        steps:
+          - checkout: self
+            persistCredentials: true
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.11"
+            displayName: "Set up Python"
+
+          - script: curl -LsSf https://astral.sh/uv/install.sh | sh
+            displayName: "Install uv"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv sync --all-groups
+            displayName: "Install dependencies"
+
+          - script: |
+              source $HOME/.local/bin/env
+              uv run julieta-assign-ids
+
+              if [ -n "$(git status --porcelain)" ]; then
+                git config user.name "julieta-ci-bot"
+                git config user.email "ci-bot@salvahealth.co"  # permitido-datos-sensibles: cuenta de servicio del bot, no una persona
+                git add experiments
+                git commit -m "chore: asignar ID a experimento(s) pendiente(s) [skip ci]"
+                git push origin HEAD:main
+              else
+                echo "No había experimentos pendientes de asignación."
+              fi
+            displayName: "Assign pending experiment IDs"

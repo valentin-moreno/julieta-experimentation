@@ -1,0 +1,17 @@
+# Configuración global de tracking de experimentos con MLflow (Azure ML).
+# Config del repositorio, no de un experimento individual — ver
+# docs/decisions/0005-mlflow-tracking.md para la diferencia con
+# experiments/IDXX-*/configs/.
+#
+# La URL real de tracking del Azure ML Workspace NO se pone aquí ni se
+# comitea nunca: se define como variable de entorno MLFLOW_TRACKING_URI
+# (local) o como variable/secreto del pipeline (CI), porque identifica
+# recursos concretos de la suscripción de Azure.
+#
+# Cómo obtenerla una vez exista el workspace:
+#   az ml workspace show --name <workspace> --resource-group <rg> \
+#     --query mlflow_tracking_uri -o tsv
+
+# Prefijo usado para agrupar los experimentos de este repo dentro del
+# workspace de Azure ML (ver julieta.tracking.mlflow_config).
+experiment_name_prefix: "julieta"

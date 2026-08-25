@@ -1,0 +1,1 @@
+Checks de calidad de datos reutilizables (nulls, tipos, rangos, esquema): reciben datos y devuelven un resultado, sin decidir cuándo correr. Usados por [`pipelines/data/validation`](../../../../pipelines/data/validation).

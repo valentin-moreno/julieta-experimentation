@@ -1,0 +1,1 @@
+Toma `data/raw`, aplica transformaciones y produce `data/processed`. Usa [`src/julieta/data/loaders`](../../../src/julieta/data/loaders) para leer y [`src/julieta/features`](../../../src/julieta/features) para transformar. Ver [ADR 0002](../../../docs/decisions/0002-pipelines-vs-src-separation.md).

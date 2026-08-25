@@ -1,0 +1,1 @@
+Funciones reutilizables que saben *cómo* traer datos crudos desde una fuente externa (API, base de datos, storage), dado un identificador o config. No deciden cuándo correr — eso lo hace [`pipelines/data/download`](../../../../pipelines/data/download).

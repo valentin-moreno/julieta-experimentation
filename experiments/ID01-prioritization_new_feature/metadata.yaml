@@ -1,0 +1,28 @@
+# Información Básica
+id: "ID01"
+name: "prioritization_new_feature"
+author: "valentin"
+colaborators: ["valentin", "jose", "maria"]
+start_date: "2026-08-21"
+end_date: null
+
+# Estado y Contexto
+status: "ongoing"              # Opciones sugeridas: planned, ongoing, completed, failed, paused
+domain: "feature_engineering"
+tags:
+  - "temporal_features"
+  - "xgboost"
+  - "user_prioritization"
+
+# Datos y Modelo
+dataset_version: "v2.1_active_users"
+model_type: "xgboost_classifier"
+
+# Métricas
+metrics:
+  primary_metric_name: "roc_auc"
+  target_value: 0.85           # El valor que esperas alcanzar o superar
+  final_value: null            # Se llena cuando el estado pase a 'completed'
+
+# Resultados
+conclusion: "En progreso. Extrayendo datos temporales para el baseline."

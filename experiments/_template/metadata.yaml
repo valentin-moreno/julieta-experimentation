@@ -1,0 +1,26 @@
+# Información Básica
+id: "IDXX"                     # Ej: "ID01", "ID02"
+name: "nombre_del_experimento" # Ej: "prioritization_new_feature"
+author: ""                     # Nombre de quien lidera el experimento
+colaborators: []               # Lista de colaboradores (opcional)
+start_date: "YYYY-MM-DD"       # Fecha de inicio
+end_date: null                 # Fecha de finalización (dejar null si está en curso)
+
+# Estado y Contexto
+status: "planned"              # Opciones: planned, ongoing, completed, failed, paused
+domain: ""                     # Ej: feature_engineering, nlp, audio_enhancement
+tags:                          # Lista de etiquetas para facilitar la búsqueda
+  - ""
+
+# Datos y Modelo
+dataset_version: ""            # Ej: "v1.0", "dataset_2026_08"
+model_type: ""                 # Ej: "xgboost_classifier", "unet"
+
+# Métricas
+metrics:
+  primary_metric_name: ""      # Ej: "roc_auc", "f1_score", "rmse"
+  target_value: null           # Valor objetivo o baseline a superar (número)
+  final_value: null            # Valor obtenido al finalizar el experimento (número)
+
+# Resultados
+conclusion: ""                 # Breve resumen de los hallazgos al terminar

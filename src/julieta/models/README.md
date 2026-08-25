@@ -1,0 +1,1 @@
+Clases y funciones reutilizables de entrenamiento/evaluación de modelos (wrappers de fit/predict/evaluate), sin el flujo completo. Usadas por [`pipelines/training`](../../../pipelines/training). Ver [ADR 0006](../../../docs/decisions/0006-model-candidate-lifecycle.md) para qué pasa con el artefacto que produce el entrenamiento.

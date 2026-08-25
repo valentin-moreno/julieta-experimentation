@@ -1,0 +1,1 @@
+Trae datos crudos desde una fuente externa y los guarda en `data/raw/`. Usa las funciones de [`src/julieta/data/ingestion`](../../../src/julieta/data/ingestion). Ver [ADR 0002](../../../docs/decisions/0002-pipelines-vs-src-separation.md).

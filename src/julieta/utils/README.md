@@ -1,0 +1,1 @@
+Herramientas de gestión del propio repositorio (no del pipeline de ML): `generate_summary.py` agrega todos los `experiments/*/metadata.yaml` en un CSV, `validate_metadata.py` valida ese metadata contra [`metadata_schema.py`](metadata_schema.py) (usado en CI). Ambos expuestos como comandos en `pyproject.toml` (`julieta-summary`, `julieta-validate`).

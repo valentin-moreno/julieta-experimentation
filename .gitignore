@@ -1,0 +1,41 @@
+# Python / Entornos Virtuales
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.env
+.venv
+env/
+*.egg-info/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Ignorar el contenido de datos pero mantener las carpetas
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+
+# Ignorar modelos pesados y resultados locales, mantener carpetas
+models/candidates/*
+!models/candidates/.gitkeep
+experiments/**/results/*
+!experiments/**/results/.gitkeep
+experiments/**/reports/*
+!experiments/**/reports/.gitkeep
+
+# Caches de herramientas
+.ruff_cache/
+.pytest_cache/
+
+# Artefactos generados
+experiments_summary.csv
+test-results.xml
+
+# IDEs y OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

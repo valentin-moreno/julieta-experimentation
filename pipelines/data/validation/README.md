@@ -1,0 +1,1 @@
+Corre checks de calidad sobre `data/raw` o `data/processed` como paso de un flujo, y falla/reporta si algo no cumple. Usa las funciones de [`src/julieta/data/validation`](../../../src/julieta/data/validation). Ver [ADR 0002](../../../docs/decisions/0002-pipelines-vs-src-separation.md).
