@@ -2,12 +2,13 @@
 id: "ID01"
 name: "prioritization_new_feature"
 author: "valentin"
-colaborators: ["valentin", "jose", "maria"]
+colaborators: ["Sofia", "Mariana", "Maria Alejandra"]
 start_date: "2026-08-21"
 end_date: null
 
 # Estado y Contexto
-status: "ongoing"              # Opciones sugeridas: planned, ongoing, completed, failed, paused
+status: "ongoing"                                        # Opciones sugeridas: planned, ongoing, completed, failed, paused
+type: "experiment"
 domain: "feature_engineering"
 tags:
   - "temporal_features"
@@ -21,8 +22,9 @@ model_type: "xgboost_classifier"
 # Métricas
 metrics:
   primary_metric_name: "roc_auc"
-  target_value: 0.85           # El valor que esperas alcanzar o superar
-  final_value: null            # Se llena cuando el estado pase a 'completed'
+  target_value: 0.85               # El valor que esperas alcanzar o superar
+  final_value: 0.83                # Se llena cuando el estado pase a 'completed'
 
-# Resultados
+# Objetivo y Resultados
+objective: "Evaluar si agregar features temporales de actividad de usuario mejora el ROC-AUC del modelo de priorización (XGBoost) sobre el baseline actual."  # inferido de name/tags/metrics existentes, confirmar o ajustar
 conclusion: "En progreso. Extrayendo datos temporales para el baseline."

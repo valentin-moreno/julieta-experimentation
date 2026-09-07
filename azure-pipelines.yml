@@ -45,6 +45,19 @@ stages:
               uv run julieta-validate
             displayName: "Validate experiment metadata"
 
+          - script: |
+              source $HOME/.local/bin/env
+              uv run julieta-summary
+            condition: succeededOrFailed()
+            displayName: "Generate experiments summary"
+
+          - task: PublishPipelineArtifact@1
+            condition: succeededOrFailed()
+            inputs:
+              targetPath: "experiments_summary.csv"
+              artifactName: "experiments-summary"
+            displayName: "Publish experiments summary as build artifact"
+
           - task: PublishTestResults@2
             condition: succeededOrFailed()
             inputs:

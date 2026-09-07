@@ -37,7 +37,9 @@ def generate_experiments_summary(
                         "id": metadata.get("id"),
                         "name": metadata.get("name"),
                         "author": metadata.get("author"),
+                        "colaborators": ", ".join(filter(None, metadata.get("colaborators", []))),
                         "status": metadata.get("status"),
+                        "type": metadata.get("type"),
                         "domain": metadata.get("domain"),
                         # Convertir la lista de tags en un string separado por comas
                         "tags": ", ".join(filter(None, metadata.get("tags", [])))
@@ -53,6 +55,7 @@ def generate_experiments_summary(
                         "final_value": metadata.get("metrics", {}).get("final_value"),
                         "start_date": metadata.get("start_date"),
                         "end_date": metadata.get("end_date"),
+                        "objective": metadata.get("objective"),
                         "conclusion": metadata.get("conclusion"),
                     }
                     data.append(row)

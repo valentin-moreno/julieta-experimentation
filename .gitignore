@@ -12,11 +12,13 @@ env/
 # Jupyter Notebooks
 .ipynb_checkpoints
 
-# Ignorar el contenido de datos pero mantener las carpetas
+# Ignorar el contenido de datos pero mantener las carpetas y los punteros
+# de DVC (*.dvc) — ver docs/decisions/0007-dvc-data-versioning.md.
 data/raw/*
 data/interim/*
 data/processed/*
 !data/**/.gitkeep
+!data/**/*.dvc
 
 # Ignorar modelos pesados y resultados locales, mantener carpetas
 models/candidates/*
@@ -33,6 +35,12 @@ experiments/**/reports/*
 # Artefactos generados
 experiments_summary.csv
 test-results.xml
+
+# MLflow local (backend sqlite/artifacts por defecto cuando se prueba sin
+# Azure ML — ver docs/decisions/0009-mlflow-logging-convention.md)
+mlruns/
+mlflow.db
+*.db-journal
 
 # IDEs y OS
 .vscode/

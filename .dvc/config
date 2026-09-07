@@ -1,0 +1,6 @@
+[core]
+    analytics = false
+    remote = azure-storage
+['remote "azure-storage"']
+    url = azure://dvc-storage/data
+    account_name = mlsalvadev2301648611

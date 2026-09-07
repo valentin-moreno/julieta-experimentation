@@ -7,6 +7,7 @@ name: "{name}"
 author: "integration-test"
 start_date: "2026-08-25"
 status: "completed"
+type: "experiment"
 domain: "test"
 tags:
   - "integration"
@@ -16,6 +17,7 @@ metrics:
   primary_metric_name: "accuracy"
   target_value: 0.9
   final_value: 0.95
+objective: "test objective"
 conclusion: "test conclusion"
 """
 
@@ -64,3 +66,5 @@ def test_full_experiment_lifecycle_via_cli(tmp_path):
     new_row = next(row for row in rows if row["id"] == "ID02")
     assert new_row["name"] == "brand_new_experiment"
     assert new_row["status"] == "completed"
+    assert new_row["type"] == "experiment"
+    assert new_row["objective"] == "test objective"

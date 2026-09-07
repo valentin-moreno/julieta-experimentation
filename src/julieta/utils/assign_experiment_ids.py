@@ -4,6 +4,7 @@ from pathlib import Path
 from julieta.utils.metadata_schema import ASSIGNED_ID_PATTERN, PENDING_ID
 
 ID_LINE_PATTERN = re.compile(r'^(id:\s*)"' + re.escape(PENDING_ID) + r'"(.*)$', re.MULTILINE)
+README_HEADING_PATTERN = re.compile(r"^(# )" + re.escape(PENDING_ID) + r"(\b.*)$", re.MULTILINE)
 
 
 def _next_available_number(experiments_dir: Path) -> int:
@@ -25,11 +26,25 @@ def _rewrite_id_in_metadata(metadata_path: Path, new_id: str) -> None:
     metadata_path.write_text(new_text, encoding="utf-8")
 
 
+def _rewrite_id_in_readme(readme_path: Path, new_id: str) -> None:
+    """Update the "# IDXX - ..." heading to the real id, if present.
+
+    Unlike metadata.yaml, this is best-effort: metadata.yaml stays the
+    authoritative source of the id (ADR 0003), so a missing/reworded heading
+    doesn't fail the whole assignment run.
+    """
+    text = readme_path.read_text(encoding="utf-8")
+    new_text, count = README_HEADING_PATTERN.subn(rf"\g<1>{new_id}\g<2>", text, count=1)
+    if count == 1:
+        readme_path.write_text(new_text, encoding="utf-8")
+
+
 def assign_pending_ids(experiments_dir="experiments"):
     """Assign a real sequential ID to every experiments/IDXX-* folder still pending.
 
-    Renames each pending folder and rewrites its metadata.yaml id field in place.
-    Returns a list of (old_name, new_name) tuples for everything that was assigned.
+    Renames each pending folder, rewrites its metadata.yaml id field, and
+    updates the "# IDXX - ..." heading in its README.md if present. Returns a
+    list of (old_name, new_name) tuples for everything that was assigned.
     """
     base_path = Path(experiments_dir)
     if not base_path.exists():
@@ -50,6 +65,10 @@ def assign_pending_ids(experiments_dir="experiments"):
         metadata_path = exp_dir / "metadata.yaml"
         if metadata_path.exists():
             _rewrite_id_in_metadata(metadata_path, new_id)
+
+        readme_path = exp_dir / "README.md"
+        if readme_path.exists():
+            _rewrite_id_in_readme(readme_path, new_id)
 
         new_path = exp_dir.with_name(new_name)
         exp_dir.rename(new_path)

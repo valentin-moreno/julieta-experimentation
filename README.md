@@ -70,8 +70,31 @@ Los cambios de diseño no triviales del repo se documentan como ADRs en [docs/de
 
 ## Tracking de experimentos (MLflow sobre Azure ML)
 
-El código ya está listo (`julieta.tracking.mlflow_config.configure_mlflow`, dependencias en `pyproject.toml`, config en [configs/mlflow.yaml](configs/mlflow.yaml)), pero depende de un **Azure ML Workspace** todavía sin aprovisionar — ver [ADR 0005](docs/decisions/0005-mlflow-tracking.md). Hasta que exista, `configure_mlflow` falla con un mensaje explícito en vez de fallar en silencio.
+`julieta.tracking.mlflow_config.log_run(experiment_id, experiment_name, author, config, metrics, artifacts, tags)` loguea un run completo (todos los parámetros, todas las métricas, tags de autor/commit, artefactos) en una sola llamada, sin que cada quien tenga que recordar la convención — ver [ADR 0009](docs/decisions/0009-mlflow-logging-convention.md). Ya está conectado al **Azure ML Workspace** `ml-salva-dev` (resource group `ml-ops`) — ver [ADR 0005](docs/decisions/0005-mlflow-tracking.md).
+
+**Setup (una sola vez por persona):**
+
+1. Pide el rol **AzureML Data Scientist** sobre el workspace `ml-salva-dev` a quien administra el resource group `ml-ops`.
+2. Autentícate con tu cuenta de Salva Health: `az login`.
+3. Copia `.env.example` a `.env` (ya ignorado por git) y completa `MLFLOW_TRACKING_URI` con el valor real:
+   ```bash
+   az ml workspace show --name ml-salva-dev --resource-group ml-ops \
+     --query mlflow_tracking_uri -o tsv
+   ```
+4. Listo — `log_run(...)` recoge la URL automáticamente desde `.env`, no hace falta exportarla a mano en cada sesión.
+
+Si `.env`/`MLFLOW_TRACKING_URI` no está configurado, `configure_mlflow`/`log_run` fallan con un mensaje explícito en vez de fallar en silencio.
+
+## Versionado de datos (DVC sobre Azure Blob Storage)
+
+Los datasets se versionan con `dvc add`/`dvc push` en `pipelines/data/download` (después de anonimizar), en vez de quedar solo como texto libre en `dataset_version`. Ya está conectado al container `dvc-storage` del Storage Account `mlsalvadev2301648611` — ver [ADR 0007](docs/decisions/0007-dvc-data-versioning.md).
+
+**Setup (una sola vez por persona):**
+
+1. Pide el rol **Storage Blob Data Contributor** sobre `mlsalvadev2301648611` a quien administra el resource group `ml-ops`.
+2. Autentícate con tu cuenta de Salva Health: `az login` (la autenticación de DVC usa la misma sesión, no hace falta ninguna clave ni connection string).
+3. Listo — `dvc pull` trae los datos exactos de un experimento, `dvc push` sube uno nuevo.
 
 ## Roadmap
 
-Este es el estado fundacional del repo (empaquetado, estructura, calidad de código, validación de metadata, gobernanza de datos). Próximas fases: tracking de experimentos con MLflow (en progreso, bloqueado en el recurso de Azure), versionado de datos/modelos con DVC, orquestación de pipelines en CI/CD, y monitoreo de modelos en producción.
+Este es el estado fundacional del repo (empaquetado, estructura, calidad de código, validación de metadata, gobernanza de datos). Tracking de experimentos con MLflow: **conectado**. Versionado de datos con DVC: **conectado**. Próximas fases: orquestación de pipelines en CI/CD, y monitoreo de modelos en producción.

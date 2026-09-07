@@ -15,7 +15,7 @@ Se consideraron varias alternativas: IDs con timestamp o UUID (eliminan la colis
 - Al mergear a `main` (no en la validación del PR), el stage `AssignExperimentIds` de [azure-pipelines.yml](../../azure-pipelines.yml) corre `julieta-assign-ids` ([assign_experiment_ids.py](../../src/julieta/utils/assign_experiment_ids.py)), que:
   1. Calcula el siguiente número libre a partir de los `ID<n>` ya asignados.
   2. Resuelve **todas** las carpetas `IDXX-*` pendientes en una sola pasada (no una por corrida), para que dos merges casi simultáneos no compitan por el mismo número.
-  3. Renombra cada carpeta y reescribe el campo `id` en su `metadata.yaml`.
+  3. Renombra cada carpeta, reescribe el campo `id` en su `metadata.yaml`, y actualiza el encabezado `# IDXX - ...` de su `README.md` si existe (`metadata.yaml` sigue siendo la fuente de verdad — si el encabezado no matchea, no falla la asignación, solo no se toca).
   4. Comitea el resultado directamente a `main` con el mensaje `[skip ci]`.
 - El trigger de CI usa `batch: true` para no correr dos pipelines en paralelo sobre `main`.
 - **El código vive en GitHub; Azure Pipelines solo lo consume como fuente externa** (conexión de servicio de GitHub), no hay Azure Repos en este flujo. La rama `main` está protegida con una branch protection rule de GitHub (exigir PR), y el push automático del bot necesita una excepción a esa regla — en GitHub esto no es un permiso separado como en Azure Repos, sino una de estas dos formas:

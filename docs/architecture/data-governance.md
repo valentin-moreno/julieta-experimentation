@@ -1,7 +1,7 @@
 # Gobernanza de datos sensibles
 
 > **Estado: borrador técnico, pendiente de validación por legal/compliance.**
-> Este documento define reglas de ingeniería para qué datos pueden tocar este repositorio y cómo. No sustituye una política de tratamiento de datos personales formal de Salva Health — si esa política no existe todavía, este documento puede servir de insumo inicial, pero el marco legal aplicable (Ley 1581 de 2012 y su Decreto Reglamentario 1377 de 2013 en Colombia — que clasifican los datos de salud como **datos sensibles** bajo el Artículo 5 de la Ley 1581) debe ser confirmado y ampliado por quien tenga esa responsabilidad formal en la empresa, no por este repositorio.
+> Este documento define reglas de ingeniería para qué datos pueden tocar este repositorio y cómo. No sustituye una política de tratamiento de datos personales formal de Salva Health — si esa política no existe todavía, este documento puede servir de insumo inicial, pero el marco legal aplicable (Ley 1581 de 2012 y su Decreto Reglamentario 1377 de 2013 en Colombia que clasifican los datos de salud como **datos sensibles** bajo el Artículo 5 de la Ley 1581) debe ser confirmado y ampliado por quien tenga esa responsabilidad formal en la empresa, no por este repositorio.
 
 ## Por qué existe este documento
 
@@ -31,6 +31,14 @@ Todo dato de Nivel 1 o 2 debe pasar por un proceso de **anonimización o seudoni
 ### Dónde vive esta responsabilidad en la arquitectura del repo
 
 Según [ADR 0002](../decisions/0002-pipelines-vs-src-separation.md), `pipelines/data/download` es el único punto que trae datos desde una fuente externa. Es, por diseño, el lugar donde debe aplicarse la anonimización — **antes** de escribir cualquier cosa a `data/raw`. Ningún notebook ni pipeline aguas abajo (`build`, `validation`, `training`) debería necesitar tocar un identificador directo, porque para cuando el dato llega ahí ya debería estar anonimizado.
+
+### El remoto de DVC es otro lugar donde el dato queda casi permanente
+
+Desde [ADR 0007](../decisions/0007-dvc-data-versioning.md), los datasets se versionan con DVC sobre Azure Blob Storage. La misma regla aplica ahí: **la anonimización debe pasar antes de `dvc add`/`dvc push`, nunca después.** Un dato que llega al remoto de DVC sin anonimizar tiene el mismo problema que uno commiteado a git — queda en versiones anteriores del dataset, disponible para cualquiera con acceso al remoto, y no se puede simplemente "borrar" sin coordinar una purga.
+
+### Los artefactos de MLflow son un tercer lugar con la misma regla
+
+Desde [ADR 0009](../decisions/0009-mlflow-logging-convention.md), `log_run` sube archivos (`artifacts`) a MLflow — plots, el config usado, el modelo entrenado. **Nunca una muestra cruda de datos reales como artefacto**, ni siquiera "solo para revisar algo rápido": un CSV de ejemplo con filas reales subido como artefacto tiene exactamente el mismo problema que un dato sin anonimizar en `data/raw` o en el remoto de DVC — queda accesible para cualquiera con acceso al workspace, indefinidamente.
 
 ## Controles ya existentes en el repo (parciales, no suficientes por sí solos)
 

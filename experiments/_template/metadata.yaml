@@ -8,13 +8,22 @@ end_date: null                 # Fecha de finalización (dejar null si está en 
 
 # Estado y Contexto
 status: "planned"              # Opciones: planned, ongoing, completed, failed, paused
-domain: ""                     # Ej: feature_engineering, nlp, audio_enhancement
+type: ""                       # Obligatorio. Opciones: experiment, data_report, analysis
+                                # Por qué existe: no todo lo que va en experiments/ es un
+                                # experimento con modelo e hipótesis — a veces es un reporte
+                                # de calidad/caracterización de datos, sin modelo de por medio.
+                                # "type" clasifica QUÉ CLASE de trabajo es esto, sin mezclarse
+                                # con "domain" (que dice DE QUÉ ÁREA es). Ver ADR 0008.
+                                # Si es "data_report" o "analysis", las secciones Hipótesis/
+                                # Metodología/Métricas de éxito del README no aplican tal cual
+                                # ver la nota al inicio de experiments/_template/README.md.
+domain: ""                     # Ej: feature_engineering, eda, model_evaluation, data_quality.
 tags:                          # Lista de etiquetas para facilitar la búsqueda
   - ""
 
 # Datos y Modelo
 dataset_version: ""            # Ej: "v1.0", "dataset_2026_08"
-model_type: ""                 # Ej: "xgboost_classifier", "unet"
+model_type: ""                 # Ej: "xgboost_classifier", "unet" (vacío si no aplica, ej. en un data_report)
 
 # Métricas
 metrics:
@@ -22,5 +31,13 @@ metrics:
   target_value: null           # Valor objetivo o baseline a superar (número)
   final_value: null            # Valor obtenido al finalizar el experimento (número)
 
-# Resultados
-conclusion: ""                 # Breve resumen de los hallazgos al terminar
+# Objetivo y Resultados
+objective: ""                  # Por qué existe: qué se busca lograr, en una frase — se llena
+                                # AL CREAR el experimento, no al final (a diferencia de
+                                # "conclusion"). Junto con "conclusion" forma el par
+                                # "qué buscaba" -> "qué encontré" legible desde el CSV
+                                # (julieta-summary) sin tener que abrir el README completo.
+conclusion: ""                 # Por qué existe: breve resumen de los hallazgos al terminar —
+                                # es el resultado del "objective" de arriba. Debe ser
+                                # consistente con la sección "Conclusiones y siguientes pasos"
+                                # del README.

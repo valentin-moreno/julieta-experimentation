@@ -2,16 +2,21 @@
 
 ## Flujo de trabajo
 
-1. Crea una rama a partir de `main`. Convención sugerida: `exp/IDXX-nombre_del_experimento` para experimentos, `feature/lo-que-sea` o `fix/lo-que-sea` para cambios de código o infraestructura del repo.
-2. Antes de abrir el PR, corre localmente:
+1. Crea una rama a partir de `main`, siguiendo la convención de nombres — ver [docs/experimentation/guia-de-colaboracion-git.md](docs/experimentation/guia-de-colaboracion-git.md#1-nombres-de-rama) para el detalle completo (tipos de rama, cómo se nombra cuando varias personas trabajan en el mismo experimento).
+2. Escribe tus commits siguiendo el formato `<tipo>(<alcance>): <descripción>` — ver [la misma guía, sección 2](docs/experimentation/guia-de-colaboracion-git.md#2-mensajes-de-commit).
+3. Antes de abrir el PR, corre localmente:
    ```bash
    uv run pre-commit run --all-files
    uv run pytest -q
    ```
    (los hooks de pre-commit ya corren esto en cada commit local si activaste `uv run pre-commit install` — ver Quickstart en el [README](README.md)).
-3. Abre el PR a `main`. El pipeline de Azure ([azure-pipelines.yml](azure-pipelines.yml)) corre lint, tests y valida el metadata de experimentos automáticamente.
-4. Si tu PR agrega un experimento nuevo (`experiments/IDXX-*`), **no le asignes un ID a mano** — el pipeline lo asigna automáticamente al mergear (ver [ADR 0003](docs/decisions/0003-experiment-id-assignment.md)).
-5. Espera a que el pipeline pase en verde antes de mergear. El número de aprobaciones requeridas lo define la branch protection rule de `main`, no este documento.
+4. Abre el PR a `main` — checklist y qué revisar en [la guía, sección 3](docs/experimentation/guia-de-colaboracion-git.md#3-pull-requests). El pipeline de Azure ([azure-pipelines.yml](azure-pipelines.yml)) corre lint, tests y valida el metadata de experimentos automáticamente.
+5. Si tu PR agrega un experimento nuevo (`experiments/IDXX-*`), **no le asignes un ID a mano** — el pipeline lo asigna automáticamente al mergear (ver [ADR 0003](docs/decisions/0003-experiment-id-assignment.md)).
+6. Espera a que el pipeline pase en verde antes de mergear. El número de aprobaciones requeridas lo define la branch protection rule de `main`, no este documento.
+
+## Cadencia de PRs en un experimento largo
+
+No dejes todo el experimento en un solo PR gigante al final — así nadie del equipo ve progreso hasta que ya está "terminado" y es tarde para dar feedback útil. Prefiere PRs incrementales por hito: uno cuando el EDA está listo, otro cuando hay un baseline, otro por cada variante relevante que se prueba. Cada PR actualiza el `metadata.yaml` y el README del experimento al estado real en ese momento — no hace falta esperar a la conclusión final para que ambos digan algo útil. Detalle completo (incluyendo qué hacer si dos personas trabajan en el mismo experimento a la vez) en [la guía, sección 3](docs/experimentation/guia-de-colaboracion-git.md#3-pull-requests).
 
 ## Antes de traer datos nuevos
 

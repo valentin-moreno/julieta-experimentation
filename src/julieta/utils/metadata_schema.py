@@ -16,6 +16,12 @@ class ExperimentStatus(StrEnum):
     PAUSED = "paused"
 
 
+class ExperimentType(StrEnum):
+    EXPERIMENT = "experiment"
+    DATA_REPORT = "data_report"
+    ANALYSIS = "analysis"
+
+
 class ExperimentMetrics(BaseModel):
     primary_metric_name: str = ""
     target_value: float | None = None
@@ -42,6 +48,7 @@ class ExperimentMetadata(BaseModel):
     end_date: date | None = None
 
     status: ExperimentStatus
+    type: ExperimentType
     domain: str = ""
     tags: list[str] = Field(default_factory=list)
 
@@ -49,4 +56,5 @@ class ExperimentMetadata(BaseModel):
     model_type: str = ""
 
     metrics: ExperimentMetrics = Field(default_factory=ExperimentMetrics)
+    objective: str = ""
     conclusion: str = ""

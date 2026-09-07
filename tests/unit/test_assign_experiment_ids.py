@@ -52,3 +52,33 @@ def test_ignores_template_folder(tmp_path):
     _make_experiment(tmp_path, "_template", "IDXX", "nombre_del_experimento")
 
     assert assign_pending_ids(tmp_path) == []
+
+
+def test_rewrites_readme_heading_when_present(tmp_path):
+    exp_dir = _make_experiment(tmp_path, "IDXX-new_idea", "IDXX", "new_idea")
+    (exp_dir / "README.md").write_text(
+        "# IDXX - new_idea\n\n## Resumen\n\nAlgo.\n", encoding="utf-8"
+    )
+
+    assign_pending_ids(tmp_path)
+
+    readme_text = (tmp_path / "ID01-new_idea" / "README.md").read_text()
+    assert readme_text.startswith("# ID01 - new_idea")
+
+
+def test_missing_readme_does_not_fail_assignment(tmp_path):
+    _make_experiment(tmp_path, "IDXX-new_idea", "IDXX", "new_idea")
+
+    assigned = assign_pending_ids(tmp_path)
+
+    assert assigned == [("IDXX-new_idea", "ID01-new_idea")]
+
+
+def test_readme_without_matching_heading_is_left_untouched(tmp_path):
+    exp_dir = _make_experiment(tmp_path, "IDXX-new_idea", "IDXX", "new_idea")
+    (exp_dir / "README.md").write_text("# Un título distinto\n", encoding="utf-8")
+
+    assign_pending_ids(tmp_path)
+
+    readme_text = (tmp_path / "ID01-new_idea" / "README.md").read_text()
+    assert readme_text == "# Un título distinto\n"
