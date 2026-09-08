@@ -25,6 +25,7 @@ dependencies = [
 julieta-summary = "julieta.utils.generate_summary:main"
 julieta-validate = "julieta.utils.validate_metadata:main"
 julieta-assign-ids = "julieta.utils.assign_experiment_ids:main"
+julieta-report = "julieta.utils.generate_experiment_report:main"
 julieta-scan-sensitive = "julieta.utils.scan_sensitive_data:main"
 
 [dependency-groups]
