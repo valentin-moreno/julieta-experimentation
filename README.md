@@ -95,6 +95,17 @@ Los datasets se versionan con `dvc add`/`dvc push` en `pipelines/data/download` 
 2. Autentícate con tu cuenta de Salva Health: `az login` (la autenticación de DVC usa la misma sesión, no hace falta ninguna clave ni connection string).
 3. Listo — `dvc pull` trae los datos exactos de un experimento, `dvc push` sube uno nuevo.
 
+## CI/CD (Azure Pipelines sobre GitHub)
+
+El pipeline de lint/tests/validación de metadata ya está definido en [azure-pipelines.yml](azure-pipelines.yml) (stage `Build`), junto con la asignación automática de IDs de experimento en el stage `AssignExperimentIds` — ver [ADR 0003](docs/decisions/0003-experiment-id-assignment.md). Pero **todavía no está conectado a un pipeline real en Azure DevOps**. Falta, en este orden:
+
+1. **Migrar el repo al GitHub de la organización de Salva Health** — hoy vive en una cuenta personal (`valentin-moreno/julieta-experimentation`), y la conexión con Azure DevOps no debe depender de una cuenta individual.
+2. **Pedir acceso a la organización de Azure DevOps de Salva Health** (nivel Basic, más permisos de proyecto para crear pipelines y administrar service connections) a quien la administre.
+3. Crear el pipeline en Azure DevOps apuntando al repo ya migrado, autorizando la Azure Pipelines GitHub App con **permiso de escritura** — no solo el checkout de solo-lectura por default. El stage `AssignExperimentIds` hace `git push origin HEAD:main` y falla si la conexión es de solo lectura.
+4. Configurar ese pipeline como *required status check* en la branch protection rule de `main` en GitHub, para que un PR no se pueda mergear con el pipeline en rojo — lo que promete [CONTRIBUTING.md](CONTRIBUTING.md), pero que hoy no se cumple porque el pipeline no corre en ningún lado.
+
+Mientras estos 4 pasos no estén listos, `uv run pre-commit run --all-files` y `uv run pytest -q` en local son la única validación real antes de mergear.
+
 ## Roadmap
 
-Este es el estado fundacional del repo (empaquetado, estructura, calidad de código, validación de metadata, gobernanza de datos). Tracking de experimentos con MLflow: **conectado**. Versionado de datos con DVC: **conectado**. Próximas fases: orquestación de pipelines en CI/CD, y monitoreo de modelos en producción.
+Este es el estado fundacional del repo (empaquetado, estructura, calidad de código, validación de metadata, gobernanza de datos). Tracking de experimentos con MLflow: **conectado**. Versionado de datos con DVC: **conectado**. CI/CD con Azure Pipelines: **definido, pendiente de conectar** (ver sección CI/CD arriba). Próxima fase adicional: monitoreo de modelos en producción.
