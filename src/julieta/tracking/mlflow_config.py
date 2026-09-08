@@ -60,6 +60,7 @@ def log_run(
     metrics: dict[str, float] | None = None,
     artifacts: list[str] | None = None,
     tags: dict[str, str] | None = None,
+    run_name: str | None = None,
 ) -> str:
     """Log a complete MLflow run following this repo's convention (ver ADR 0009):
 
@@ -76,10 +77,15 @@ def log_run(
 
     Debe llamarse después de que MLFLOW_TRACKING_URI esté configurada. Loguea
     todo dentro de un solo run y devuelve su run_id.
+
+    `run_name` identifica este run dentro del experimento en la UI de MLflow/Azure
+    ML — sin él, MLflow le asigna un nombre aleatorio (ej. "loyal-picture-m0jqptwt")
+    que no dice nada sobre qué variante es. Usa el mismo nombre que el archivo de
+    `configs/*.yaml` que generó este run (ej. "baseline").
     """
     configure_mlflow(experiment_id, experiment_name)
 
-    with mlflow.start_run() as run:
+    with mlflow.start_run(run_name=run_name) as run:
         mlflow.set_tags(
             {
                 "author": author,
