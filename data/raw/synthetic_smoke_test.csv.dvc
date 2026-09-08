@@ -1,0 +1,5 @@
+outs:
+- md5: d4e20408d4ef61d22005806fbc00d2db
+  size: 468923
+  hash: md5
+  path: synthetic_smoke_test.csv
