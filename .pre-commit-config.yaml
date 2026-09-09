@@ -19,12 +19,12 @@ repos:
       - id: trailing-whitespace
 
   # Segunda capa de defensa además de la disciplina humana — ver
-  # docs/architecture/data-governance.md. Excluye tests/: sus fixtures
+  # docs/architecture/data_governance.md. Excluye tests/: sus fixtures
   # necesitan contener ejemplos de patrones "malos" a propósito.
   - repo: local
     hooks:
       - id: scan-sensitive-data
         name: Buscar patrones de datos sensibles
-        entry: uv run julieta-scan-sensitive
+        entry: uv run julieta_scan_sensitive
         language: system
         exclude: ^tests/

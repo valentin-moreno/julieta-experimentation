@@ -6,7 +6,7 @@ THIS_FILE = Path(__file__).resolve()
 
 # Nombres de columna/variable que sugieren que se está manejando un dato
 # identificable o de salud sin anonimizar. No es infalible (ver docs/
-# architecture/data-governance.md): es una segunda capa además de la
+# architecture/data_governance.md): es una segunda capa además de la
 # disciplina humana, no un reemplazo.
 SENSITIVE_KEYWORD_PATTERNS = [
     re.compile(r"c[eé]dula", re.IGNORECASE),
@@ -71,7 +71,7 @@ def main(argv=None):
     if had_matches:
         print(
             "\nSe encontraron posibles datos sensibles. Revisa "
-            "docs/architecture/data-governance.md antes de commitear. Si es un falso "
+            "docs/architecture/data_governance.md antes de commitear. Si es un falso "
             "positivo, ajusta los patrones en src/julieta/utils/scan_sensitive_data.py."
         )
         return 1

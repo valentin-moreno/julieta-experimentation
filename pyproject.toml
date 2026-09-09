@@ -19,14 +19,17 @@ dependencies = [
     "sklearn-genetic-opt>=0.11",
     "umap-learn>=0.5",
     "python-dotenv>=1.0",
+    "h5py>=3.12",
+    "azure-storage-blob>=12.27",
+    "requests>=2.32",
 ]
 
 [project.scripts]
-julieta-summary = "julieta.utils.generate_summary:main"
-julieta-validate = "julieta.utils.validate_metadata:main"
-julieta-assign-ids = "julieta.utils.assign_experiment_ids:main"
-julieta-report = "julieta.utils.generate_experiment_report:main"
-julieta-scan-sensitive = "julieta.utils.scan_sensitive_data:main"
+julieta_summary = "julieta.utils.generate_summary:main"
+julieta_validate = "julieta.utils.validate_metadata:main"
+julieta_assign_ids = "julieta.utils.assign_experiment_ids:main"
+julieta_report = "julieta.utils.generate_experiment_report:main"
+julieta_scan_sensitive = "julieta.utils.scan_sensitive_data:main"
 
 [dependency-groups]
 dev = [

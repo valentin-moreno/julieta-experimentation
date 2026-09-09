@@ -8,7 +8,7 @@
 `julieta-models` (`github.com/Salva-Health/julieta-models`) es el repo viejo del equipo, con ~2 años de trabajo real sobre diagnóstico de cáncer de mama por impedancia bioeléctrica. Se exploró todo `src/julieta` (30 archivos), `pipelines/` (39 archivos), `docs/`, `notebooks/` (137 notebooks + un store local de MLflow no trackeado, 341MB) y las dependencias reales (`requirements.txt`, 250 paquetes) para decidir qué migrar a `julieta-experimentation` sin arrastrar deuda técnica, datos sensibles, ni infraestructura obsoleta.
 
 Se confirmaron dos decisiones de alcance antes de tocar código:
-- `pipelines/online_prediction/` (33 archivos, inferencia en producción) queda **fuera de esta migración** — consistente con [ADR 0006](0006-model-candidate-lifecycle.md): este repo es de experimentación, no de serving.
+- `pipelines/online_prediction/` (33 archivos, inferencia en producción) queda **fuera de esta migración** — consistente con [ADR 0006](0006_model_candidate_lifecycle.md): este repo es de experimentación, no de serving.
 - Fase 1 **solo porta código genérico y limpio**, sin acople al esquema clínico viejo (nombres de campo en español, taxonomía BI-RADS hardcodeada). El resto queda de referencia para fases futuras, no se copia.
 
 ## Decisión

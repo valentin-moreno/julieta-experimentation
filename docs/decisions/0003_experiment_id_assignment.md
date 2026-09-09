@@ -12,7 +12,7 @@ Se consideraron varias alternativas: IDs con timestamp o UUID (eliminan la colis
 ## Decisión
 
 - Un experimento nuevo se crea siempre con el prefijo literal `IDXX` (carpeta `experiments/IDXX-nombre_del_experimento`, y `id: "IDXX"` dentro de `metadata.yaml`). Nadie asigna un número a mano.
-- Al mergear a `main` (no en la validación del PR), el stage `AssignExperimentIds` de [azure-pipelines.yml](../../azure-pipelines.yml) corre `julieta-assign-ids` ([assign_experiment_ids.py](../../src/julieta/utils/assign_experiment_ids.py)), que:
+- Al mergear a `main` (no en la validación del PR), el stage `AssignExperimentIds` de [azure-pipelines.yml](../../azure-pipelines.yml) corre `julieta_assign_ids` ([assign_experiment_ids.py](../../src/julieta/utils/assign_experiment_ids.py)), que:
   1. Calcula el siguiente número libre a partir de los `ID<n>` ya asignados.
   2. Resuelve **todas** las carpetas `IDXX-*` pendientes en una sola pasada (no una por corrida), para que dos merges casi simultáneos no compitan por el mismo número.
   3. Renombra cada carpeta, reescribe el campo `id` en su `metadata.yaml`, y actualiza el encabezado `# IDXX - ...` de su `README.md` si existe (`metadata.yaml` sigue siendo la fuente de verdad — si el encabezado no matchea, no falla la asignación, solo no se toca).
@@ -23,7 +23,7 @@ Se consideraron varias alternativas: IDs con timestamp o UUID (eliminan la colis
   - O, con GitHub Rulesets (el reemplazo moderno de branch protection), se agrega explícitamente esa identidad/app a la lista de "bypass" de la regla.
 
   Se evaluó la alternativa de que el bot abra un PR aparte en vez de pushear directo (más alineado con gobernanza estricta), pero se descartó por la fricción de requerir aprobación manual en cada asignación.
-- `julieta-validate` exige que el `id` de cada experimento sea `"IDXX"` o siga el patrón `ID<numero>`, y que el prefijo de la carpeta coincida exactamente con ese `id` (ver [metadata_schema.py](../../src/julieta/utils/metadata_schema.py) y [validate_metadata.py](../../src/julieta/utils/validate_metadata.py)).
+- `julieta_validate` exige que el `id` de cada experimento sea `"IDXX"` o siga el patrón `ID<numero>`, y que el prefijo de la carpeta coincida exactamente con ese `id` (ver [metadata_schema.py](../../src/julieta/utils/metadata_schema.py) y [validate_metadata.py](../../src/julieta/utils/validate_metadata.py)).
 
 ## Consecuencias
 

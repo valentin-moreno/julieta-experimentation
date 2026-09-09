@@ -12,7 +12,7 @@ domain: "test"
 tags:
   - "integration"
 dataset_version: "v1"
-model_type: "dummy"
+model_type: ["dummy"]
 metrics:
   primary_metric_name: "accuracy"
   target_value: 0.9
@@ -37,7 +37,7 @@ def _run(command, cwd):
 
 
 def test_full_experiment_lifecycle_via_cli(tmp_path):
-    """Exercises julieta-assign-ids -> julieta-validate -> julieta-summary as a
+    """Exercises julieta_assign_ids -> julieta_validate -> julieta_summary as a
     real sequence of CLI calls (the same order a PR merge + a scientist running
     the tools would trigger), against a shared filesystem state.
     """
@@ -46,13 +46,13 @@ def test_full_experiment_lifecycle_via_cli(tmp_path):
     _make_experiment(experiments_dir, "ID01-existing", "ID01", "existing_experiment")
     _make_experiment(experiments_dir, "IDXX-brand_new", "IDXX", "brand_new_experiment")
 
-    _run(["julieta-assign-ids"], cwd=tmp_path)
+    _run(["julieta_assign_ids"], cwd=tmp_path)
 
     assert (experiments_dir / "ID02-brand_new").is_dir()
     assert not (experiments_dir / "IDXX-brand_new").exists()
 
-    _run(["julieta-validate"], cwd=tmp_path)
-    _run(["julieta-summary"], cwd=tmp_path)
+    _run(["julieta_validate"], cwd=tmp_path)
+    _run(["julieta_summary"], cwd=tmp_path)
 
     csv_path = tmp_path / "experiments_summary.csv"
     assert csv_path.exists()

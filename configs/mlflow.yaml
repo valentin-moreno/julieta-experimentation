@@ -1,6 +1,6 @@
 # Configuración global de tracking de experimentos con MLflow (Azure ML).
 # Config del repositorio, no de un experimento individual — ver
-# docs/decisions/0005-mlflow-tracking.md para la diferencia con
+# docs/decisions/0005_mlflow_tracking.md para la diferencia con
 # experiments/IDXX-*/configs/.
 #
 # La URL real de tracking del Azure ML Workspace NO se pone aquí ni se

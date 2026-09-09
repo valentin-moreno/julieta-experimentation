@@ -36,7 +36,7 @@ docs/
 4. Verifica que todo quedó bien:
    ```bash
    uv run pytest -q
-   uv run julieta-validate
+   uv run julieta_validate
    ```
 
 No hace falta activar el entorno manualmente: cualquier comando se corre con `uv run <comando>`. Si prefieres no escribir `uv run` cada vez, `source .venv/bin/activate`.
@@ -44,33 +44,33 @@ No hace falta activar el entorno manualmente: cualquier comando se corre con `uv
 Comandos disponibles:
 
 ```bash
-uv run julieta-validate     # valida experiments/*/metadata.yaml contra el schema
-uv run julieta-summary      # genera experiments_summary.csv con todos los experimentos
-uv run julieta-assign-ids   # asigna ID real a experimentos IDXX-* pendientes (lo corre el pipeline, no tú)
+uv run julieta_validate     # valida experiments/*/metadata.yaml contra el schema
+uv run julieta_summary      # genera experiments_summary.csv con todos los experimentos
+uv run julieta_assign_ids   # asigna ID real a experimentos IDXX-* pendientes (lo corre el pipeline, no tú)
 uv run pytest               # corre los tests
 uv run ruff check .         # lint
 ```
 
 ## Datos sensibles
 
-Este es un repositorio de una empresa de salud: **ningún dato identificable o de salud sin anonimizar puede tocar este repo** (ni `data/`, ni notebooks, ni resultados), sin importar que esas carpetas ya estén en `.gitignore`. Ver [docs/architecture/data-governance.md](docs/architecture/data-governance.md) antes de traer cualquier dataset nuevo — es borrador técnico pendiente de validación por legal/compliance, pero aplica ya como regla de trabajo.
+Este es un repositorio de una empresa de salud: **ningún dato identificable o de salud sin anonimizar puede tocar este repo** (ni `data/`, ni notebooks, ni resultados), sin importar que esas carpetas ya estén en `.gitignore`. Ver [docs/architecture/data_governance.md](docs/architecture/data_governance.md) antes de traer cualquier dataset nuevo — es borrador técnico pendiente de validación por legal/compliance, pero aplica ya como regla de trabajo.
 
 ## Cómo crear un experimento nuevo
 
 1. Copia `experiments/_template` a `experiments/IDXX-nombre_del_experimento`, dejando el prefijo `IDXX` literal (no lo asignes a mano).
 2. Llena `metadata.yaml` (autor, estado, dataset, métricas objetivo), dejando `id: "IDXX"`.
-3. Corre `uv run julieta-validate` para confirmar que el metadata quedó bien formado.
-4. Abre tu PR. Al mergear a `main`, el pipeline asigna el ID real y renombra la carpeta automáticamente — ver [ADR 0003](docs/decisions/0003-experiment-id-assignment.md).
+3. Corre `uv run julieta_validate` para confirmar que el metadata quedó bien formado.
+4. Abre tu PR. Al mergear a `main`, el pipeline asigna el ID real y renombra la carpeta automáticamente — ver [ADR 0003](docs/decisions/0003_experiment_id_assignment.md).
 5. Trabaja en `notebooks/` (ver convención de nombres en [experiments/_template/README.md](experiments/_template/README.md)).
 6. Cuando el código de un experimento madura y deja de ser exploratorio, se traslada a `pipelines/` y `src/julieta/`, dejando el notebook solo como referencia del proceso original.
 
 ## Decisiones de arquitectura
 
-Los cambios de diseño no triviales del repo se documentan como ADRs en [docs/decisions](docs/decisions). Empieza por [0001-flatten-experiment-notebooks.md](docs/decisions/0001-flatten-experiment-notebooks.md) para ver el formato.
+Los cambios de diseño no triviales del repo se documentan como ADRs en [docs/decisions](docs/decisions). Empieza por [0001_flatten_experiment_notebooks.md](docs/decisions/0001_flatten_experiment_notebooks.md) para ver el formato.
 
 ## Tracking de experimentos (MLflow sobre Azure ML)
 
-`julieta.tracking.mlflow_config.log_run(experiment_id, experiment_name, author, config, metrics, artifacts, tags)` loguea un run completo (todos los parámetros, todas las métricas, tags de autor/commit, artefactos) en una sola llamada, sin que cada quien tenga que recordar la convención — ver [ADR 0009](docs/decisions/0009-mlflow-logging-convention.md). Ya está conectado al **Azure ML Workspace** `ml-salva-dev` (resource group `ml-ops`) — ver [ADR 0005](docs/decisions/0005-mlflow-tracking.md).
+`julieta.tracking.mlflow_config.log_run(experiment_id, experiment_name, author, config, metrics, artifacts, tags)` loguea un run completo (todos los parámetros, todas las métricas, tags de autor/commit, artefactos) en una sola llamada, sin que cada quien tenga que recordar la convención — ver [ADR 0009](docs/decisions/0009_mlflow_logging_convention.md). Ya está conectado al **Azure ML Workspace** `ml-salva-dev` (resource group `ml-ops`) — ver [ADR 0005](docs/decisions/0005_mlflow_tracking.md).
 
 **Setup (una sola vez por persona):**
 
@@ -87,7 +87,7 @@ Si `.env`/`MLFLOW_TRACKING_URI` no está configurado, `configure_mlflow`/`log_ru
 
 ## Versionado de datos (DVC sobre Azure Blob Storage)
 
-Los datasets se versionan con `dvc add`/`dvc push` en `pipelines/data/download` (después de anonimizar), en vez de quedar solo como texto libre en `dataset_version`. Ya está conectado al container `dvc-storage` del Storage Account `mlsalvadev2301648611` — ver [ADR 0007](docs/decisions/0007-dvc-data-versioning.md).
+Los datasets se versionan con `dvc add`/`dvc push` en `pipelines/data/download` (después de anonimizar), en vez de quedar solo como texto libre en `dataset_version`. Ya está conectado al container `dvc-storage` del Storage Account `mlsalvadev2301648611` — ver [ADR 0007](docs/decisions/0007_dvc_data_versioning.md).
 
 **Setup (una sola vez por persona):**
 
@@ -97,7 +97,7 @@ Los datasets se versionan con `dvc add`/`dvc push` en `pipelines/data/download` 
 
 ## CI/CD (Azure Pipelines sobre GitHub)
 
-El pipeline de lint/tests/validación de metadata ya está definido en [azure-pipelines.yml](azure-pipelines.yml) (stage `Build`), junto con la asignación automática de IDs de experimento en el stage `AssignExperimentIds` — ver [ADR 0003](docs/decisions/0003-experiment-id-assignment.md). Pero **todavía no está conectado a un pipeline real en Azure DevOps**. Falta, en este orden:
+El pipeline de lint/tests/validación de metadata ya está definido en [azure-pipelines.yml](azure-pipelines.yml) (stage `Build`), junto con la asignación automática de IDs de experimento en el stage `AssignExperimentIds` — ver [ADR 0003](docs/decisions/0003_experiment_id_assignment.md). Pero **todavía no está conectado a un pipeline real en Azure DevOps**. Falta, en este orden:
 
 1. **Migrar el repo al GitHub de la organización de Salva Health** — hoy vive en una cuenta personal (`valentin-moreno/julieta-experimentation`), y la conexión con Azure DevOps no debe depender de una cuenta individual.
 2. **Pedir acceso a la organización de Azure DevOps de Salva Health** (nivel Basic, más permisos de proyecto para crear pipelines y administrar service connections) a quien la administre.

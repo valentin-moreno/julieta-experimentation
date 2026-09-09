@@ -16,7 +16,7 @@ Agregar features temporales de actividad de usuario mejora el ROC-AUC del modelo
 
 - Dataset: `v2.1_active_users` (`dataset_version` en `metadata.yaml`).
 - Fuente y período que cubre: [completar].
-- Nivel de sensibilidad y confirmación de que se siguió [docs/architecture/data-governance.md](../../docs/architecture/data-governance.md) — ¿el dataset ya llegó anonimizado? [completar — no hay registro de esto todavía].
+- Nivel de sensibilidad y confirmación de que se siguió [docs/architecture/data_governance.md](../../docs/architecture/data_governance.md) — ¿el dataset ya llegó anonimizado? [completar — no hay registro de esto todavía].
 
 ## Metodología
 
@@ -30,9 +30,9 @@ Modelo: `xgboost_classifier`. Features consideradas: temporales de actividad de 
 
 ## Estructura
 
-- `metadata.yaml`: información básica, estado y métricas del experimento. `type` clasifica qué clase de trabajo es (`experiment`/`data_report`/`analysis`) y `objective` resume en una frase qué se busca lograr — junto con `conclusion`, forma el par "qué buscaba → qué encontré" legible desde `julieta-summary` sin abrir este README. Ver [ADR 0008](../../docs/decisions/0008-experiment-type-and-objective.md).
+- `metadata.yaml`: información básica, estado y métricas del experimento. `type` clasifica qué clase de trabajo es (`experiment`/`data_report`/`analysis`) y `objective` resume en una frase qué se busca lograr — junto con `conclusion`, forma el par "qué buscaba → qué encontré" legible desde `julieta_summary` sin abrir este README. Ver [ADR 0008](../../docs/decisions/0008_experiment_type_and_objective.md).
 - `configs/`: configuración usada por el experimento (hiperparámetros, paths, etc.). Nombra cada archivo por lo que prueba, no por quién lo hizo: `baseline.yaml`, `xgboost_more_depth.yaml`. Si dos colaboradores tunean variantes en paralelo, antepón tu nombre: `maria_xgboost_v2.yaml`.
-- `notebooks/`: sin subcarpetas fijas, prefijo numérico para el orden de ejecución (ver [ADR 0001](../../docs/decisions/0001-flatten-experiment-notebooks.md)). **Está vacía todavía** — no hay notebooks commiteados pese a que el experimento ya está `ongoing`.
+- `notebooks/`: sin subcarpetas fijas, prefijo numérico para el orden de ejecución (ver [ADR 0001](../../docs/decisions/0001_flatten_experiment_notebooks.md)). **Está vacía todavía** — no hay notebooks commiteados pese a que el experimento ya está `ongoing`.
 - `results/` / `reports/`: artefactos y reportes (no se versiona el contenido, solo la carpeta).
 
 ## Cómo reproducir

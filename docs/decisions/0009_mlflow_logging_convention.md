@@ -5,7 +5,7 @@
 
 ## Contexto
 
-[ADR 0005](0005-mlflow-tracking.md) definió que se usa MLflow sobre Azure ML para tracking, y dejó el mecanismo de conexión (`configure_mlflow`) listo. Pero conectar no es suficiente: si cada quien decide a mano qué loguear (un run con solo la métrica primaria, otro con todas; un run sin tags, otro con quién sabe qué), los runs no son comparables entre sí, y se pierde buena parte del valor de tener un tracking centralizado. El usuario pidió explícitamente que la convención sea completa — que nadie tenga que "pedir nada más" después de seguirla — cubriendo métricas, parámetros y artefactos, no solo el mecanismo de conexión.
+[ADR 0005](0005_mlflow_tracking.md) definió que se usa MLflow sobre Azure ML para tracking, y dejó el mecanismo de conexión (`configure_mlflow`) listo. Pero conectar no es suficiente: si cada quien decide a mano qué loguear (un run con solo la métrica primaria, otro con todas; un run sin tags, otro con quién sabe qué), los runs no son comparables entre sí, y se pierde buena parte del valor de tener un tracking centralizado. El usuario pidió explícitamente que la convención sea completa — que nadie tenga que "pedir nada más" después de seguirla — cubriendo métricas, parámetros y artefactos, no solo el mecanismo de conexión.
 
 ## Decisión
 
@@ -14,7 +14,7 @@ Se agrega [`julieta.tracking.mlflow_config.log_run`](../../src/julieta/tracking/
 - **Todos los parámetros** del config usado (ej. el contenido de `experiments/IDXX-*/configs/*.yaml`) se loguean como `params` — no una selección arbitraria.
 - **Todas las métricas calculadas**, no solo `metrics.primary_metric_name` de `metadata.yaml` — para poder comparar runs por cualquier métrica, no solo la principal.
 - **Tags automáticos**: `author` (lo pasa quien llama, normalmente `metadata.yaml.author` o el colaborador que corrió ese run) y `git_commit` (detectado automáticamente vía `git rev-parse HEAD`) — así cualquiera puede ir de un run en MLflow al código exacto que lo generó, sin tener que preguntarle a nadie.
-- **`artifacts`**: lista de rutas de archivo (plots, el config usado, el modelo entrenado) que se suben al run. **Aplica la misma regla de [docs/architecture/data-governance.md](../architecture/data-governance.md)**: nunca una muestra cruda de datos sensibles como artefacto — se agregó una sección nueva a ese documento extendiendo la regla explícitamente a MLflow.
+- **`artifacts`**: lista de rutas de archivo (plots, el config usado, el modelo entrenado) que se suben al run. **Aplica la misma regla de [docs/architecture/data_governance.md](../architecture/data_governance.md)**: nunca una muestra cruda de datos sensibles como artefacto — se agregó una sección nueva a ese documento extendiendo la regla explícitamente a MLflow.
 
 ### Hallazgos reales de la prueba local (no solo diseño en papel)
 

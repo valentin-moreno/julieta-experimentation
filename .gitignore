@@ -13,7 +13,7 @@ env/
 .ipynb_checkpoints
 
 # Ignorar el contenido de datos pero mantener las carpetas y los punteros
-# de DVC (*.dvc) — ver docs/decisions/0007-dvc-data-versioning.md.
+# de DVC (*.dvc) — ver docs/decisions/0007_dvc_data_versioning.md.
 data/raw/*
 data/interim/*
 data/processed/*
@@ -37,7 +37,7 @@ experiments_summary.csv
 test-results.xml
 
 # MLflow local (backend sqlite/artifacts por defecto cuando se prueba sin
-# Azure ML — ver docs/decisions/0009-mlflow-logging-convention.md)
+# Azure ML — ver docs/decisions/0009_mlflow_logging_convention.md)
 mlruns/
 mlflow.db
 *.db-journal

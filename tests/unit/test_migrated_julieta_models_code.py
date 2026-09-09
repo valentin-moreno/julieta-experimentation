@@ -2,7 +2,7 @@
 
 Not exhaustive test coverage of every method — just enough per module to
 confirm it imports and runs correctly in this repo's environment/dependency
-set. See docs/decisions/0010-migration-from-julieta-models.md.
+set. See docs/decisions/0010_migration_from_julieta_models.md.
 """
 
 import numpy as np
