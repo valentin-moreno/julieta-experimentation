@@ -42,18 +42,18 @@ class ExperimentMetadata(BaseModel):
         )
 
     name: str
-    author: str = ""
+    author: str = Field(min_length=1)
     colaborators: list[str] = Field(default_factory=list)
     start_date: date
     end_date: date | None = None
 
     status: ExperimentStatus
     type: ExperimentType
-    domain: str = ""
+    domain: str = Field(min_length=1)
     tags: list[str] = Field(default_factory=list)
 
-    dataset_version: str = ""
-    model_type: str = ""
+    dataset_version: str = Field(min_length=1)
+    model_type: list[str] = Field(default_factory=list)
 
     metrics: ExperimentMetrics = Field(default_factory=ExperimentMetrics)
     objective: str = ""

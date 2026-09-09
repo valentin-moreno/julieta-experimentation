@@ -23,7 +23,10 @@ tags:                          # Lista de etiquetas para facilitar la búsqueda
 
 # Datos y Modelo
 dataset_version: ""            # Ej: "v1.0", "dataset_2026_08"
-model_type: ""                 # Ej: "xgboost_classifier", "unet" (vacío si no aplica, ej. en un data_report)
+model_type: []                  # Lista -- un experimento puede comparar varios a la vez, cada
+                                # uno como su propio run en MLflow. Ej: ["xgboost_classifier"]
+                                # o ["xgboost_classifier", "logistic_regression"]. Vacía si no
+                                # aplica (ej. en un data_report).
 
 # Métricas
 metrics:
@@ -36,7 +39,7 @@ objective: ""                  # Por qué existe: qué se busca lograr, en una f
                                 # AL CREAR el experimento, no al final (a diferencia de
                                 # "conclusion"). Junto con "conclusion" forma el par
                                 # "qué buscaba" -> "qué encontré" legible desde el CSV
-                                # (julieta-summary) sin tener que abrir el README completo.
+                                # (julieta_summary) sin tener que abrir el README completo.
 conclusion: ""                 # Por qué existe: breve resumen de los hallazgos al terminar —
                                 # es el resultado del "objective" de arriba. Debe ser
                                 # consistente con la sección "Conclusiones y siguientes pasos"

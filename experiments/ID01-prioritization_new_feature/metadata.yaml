@@ -17,7 +17,7 @@ tags:
 
 # Datos y Modelo
 dataset_version: "v2.1_active_users"
-model_type: "xgboost_classifier"
+model_type: ["xgboost_classifier"]
 
 # Métricas
 metrics:

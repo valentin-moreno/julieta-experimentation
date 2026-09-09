@@ -46,7 +46,7 @@ def generate_experiments_summary(
                         if metadata.get("tags")
                         else "",
                         "dataset_version": metadata.get("dataset_version"),
-                        "model_type": metadata.get("model_type"),
+                        "model_type": ", ".join(filter(None, metadata.get("model_type", []))),
                         # Extraer los datos anidados de la sección "metrics"
                         "primary_metric_name": metadata.get("metrics", {}).get(
                             "primary_metric_name"
