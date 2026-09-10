@@ -1,1 +1,1 @@
-Funciones reutilizables para leer datos ya presentes en `data/raw/` o `data/interim/` (parquet, csv, etc.) hacia estructuras en memoria. Usadas por [`pipelines/data/build`](../../../../pipelines/data/build).
+Funciones reutilizables para leer datos ya presentes en `data/raw/` o `data/processed/` (parquet, csv, etc.) hacia estructuras en memoria. Usadas por [`pipelines/data/build`](../../../../pipelines/data/build).

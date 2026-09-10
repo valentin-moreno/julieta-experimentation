@@ -5,7 +5,7 @@ Repositorio de experimentación ML organizado con prácticas MLOps: cada experim
 ## Estructura
 
 ```
-data/            # raw / interim / processed — contenido ignorado en git, solo se versiona la estructura
+data/            # raw (tal como llega) / processed (dataset ya armado, versionado con DVC) — contenido ignorado en git, solo se versiona la estructura
 experiments/     # un directorio por experimento (ver más abajo)
 pipelines/       # código productivo de datos y entrenamiento (data/build, data/download, data/validation, training)
 models/          # candidates: modelos candidatos generados por experimentos/pipelines (no versionados en git)
