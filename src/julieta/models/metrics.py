@@ -497,6 +497,7 @@ class ClassificationMetrics:
         y_pred: np.ndarray,
         y_proba: np.ndarray | None = None,
         positive_classes: tuple | None = None,
+        triclass: bool = False,
     ):
         """
         Args:
@@ -506,7 +507,12 @@ class ClassificationMetrics:
             positive_classes: If given, maps y_true/y_pred to binary (1 if the
                 original label is in `positive_classes`, else 0) before computing
                 metrics. Leave as None to use y_true/y_pred as-is (already binary).
+            triclass: Compatibilidad con notebooks portados de julieta-models --
+                equivalente a `positive_classes=(2,)`. Preferir `positive_classes`
+                en código nuevo (mismo efecto, explícito en vez de un flag opaco).
         """
+        if triclass:
+            positive_classes = (2,)
         if positive_classes is not None:
             self.y_true = self.map_to_binary(y_true, positive_classes)
             self.y_pred = self.map_to_binary(y_pred, positive_classes)
