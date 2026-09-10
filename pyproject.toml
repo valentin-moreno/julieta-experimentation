@@ -57,6 +57,18 @@ packages = ["src/julieta"]
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+# Portados tal cual de julieta-models a proposito (ver ADR 0010): la
+# fidelidad al original importa mas que el estilo de este repo. No aplicar
+# lint/formato a estos archivos especificos.
+extend-exclude = [
+    "src/julieta/data/make_dataset.py",
+    "src/julieta/data/databases.py",
+    "src/julieta/data/label_mappings.py",
+    "src/julieta/utils/paths.py",
+    "src/julieta/utils/logs.py",
+    "src/julieta/visualization/visualize.py",
+    "pipelines/data/build_training_dataset.py",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
