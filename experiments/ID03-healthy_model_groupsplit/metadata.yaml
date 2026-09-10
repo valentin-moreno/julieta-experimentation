@@ -1,0 +1,39 @@
+# Información Básica
+id: "ID03"
+name: "healthy_model_groupsplit"
+author: "dgrajales"
+colaborators: []
+start_date: "2026-09-09"
+end_date: "2026-09-10"
+
+# Estado y Contexto
+status: "completed"
+type: "experiment"
+domain: "patient_triage"
+tags:
+  - "bioimpedance"
+  - "cole_cole"
+  - "advanced_nyquist"
+  - "groupsplit"
+  - "migrated_from_julieta_models"
+
+# Datos y Modelo
+dataset_version: "dataset-healthy_advanced_nyquist-v1"
+model_type:
+  - "svc"
+  - "logistic_regression"
+  - "random_forest"
+  - "xgboost_classifier"
+  - "xgboost_classifier_balanced"
+  - "gradient_boosting"
+  - "knn"
+
+# Métricas
+metrics:
+  primary_metric_name: "youden_j"
+  target_value: null
+  final_value: 0.50
+
+# Objetivo y Resultados
+objective: "Portar el experimento real VMV-healthy_model_experimentos_groupsplit de julieta-models a este repo, probando de punta a punta la infraestructura (features compartidas, DVC, MLflow con modelo logueado) con un caso real de negocio, no un smoke test sintético: comparar 7 clasificadores para priorizar pacientes por riesgo, con split por paciente y features de bioimpedancia Cole-Cole/Nyquist. Incluye 3 notebooks: 01 (reescritura propia, resistencia/reactancia), 02 (codigo real de julieta-models sin modificar, magnitud/fase) y 03 (codigo real sin modificar, resistencia/reactancia)."
+conclusion: "Los 3 notebooks corren de punta a punta contra datos reales y MLflow/Azure ML real. 01 (reescritura propia): 1204 filas, gana SVC (youden_j 0.49). 02 (codigo real, magphase): 1269 filas, gana SVC (0.47). 03 (codigo real, resistencia/reactancia): 1269 filas, gana LogisticRegression (0.50). El notebook historico original (2026-08-21, preservado en sus outputs) reportaba 1241 filas y SVC ganador con 0.52 -- parecido pero no identico a 02/03 porque build_training_dataset.py (el script real del que se porta la logica) se creo en julieta-models una semana despues de esa corrida: el codigo que genero esos 1241/0.52 exactos ya no existe en ningun lado, y la base de datos en vivo siguio creciendo desde entonces (+28 pacientes). Bug real encontrado portando el codigo real (01 no lo tenia corregido): los .h5 de señal traen pacientes duplicados (6 SURA, 144 CAFAM, 50 CLINICA_DE_MAMA) que hay que deduplicar por (patient_id, side) antes de usarlos. Bug real encontrado y corregido en mlflow_config: mlflow.sklearn.log_model() en mlflow>=3 intenta crear una entidad 'Logged Model' vía un endpoint que el tracking server de Azure ML no implementa (404 real) -- log_run() ahora loguea el modelo con joblib+log_artifact en vez de log_model, con test de regresión. Se agrego triclass a ClassificationMetrics para que 02/03 corrieran sin modificar esa parte del codigo original."

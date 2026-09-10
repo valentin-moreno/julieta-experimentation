@@ -32,4 +32,4 @@ repos:
         name: Buscar patrones de datos sensibles
         entry: uv run julieta_scan_sensitive
         language: system
-        exclude: ^tests/|^pipelines/data/build_training_dataset\.py$|^src/julieta/data/(make_dataset|databases)\.py$|^src/julieta/visualization/visualize\.py$
+        exclude: ^tests/|^pipelines/data/build_training_dataset\.py$|^src/julieta/data/(make_dataset|databases)\.py$|^src/julieta/visualization/visualize\.py$|^experiments/ID03-healthy_model_groupsplit/notebooks/

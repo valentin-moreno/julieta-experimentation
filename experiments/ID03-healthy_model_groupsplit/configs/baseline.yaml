@@ -1,0 +1,40 @@
+# Config del experimento -- portado y adaptado de
+# julieta-models/notebooks/modeling/VMV-healthy_model_experimentos_groupsplit.ipynb
+# (ver README.md de este experimento para el detalle de que cambio y por que).
+
+dataset:
+  studies: ["SURA", "CAFAM", "CLINICA_DE_MAMA"]
+  feature_mode: "advanced_nyquist" # Cole-Cole/RS-CPE/geometria de Nyquist por nodo (ver
+  # src/julieta/features/compute_features.py), no columnas nodo-frecuencia crudas.
+  nyquist_stats: ["mean", "std", "cv"] # de los 7 estadisticos disponibles al agregar por seno
+
+split:
+  test_size: 0.25
+  group_level: "patient_id" # ambos senos del mismo paciente quedan siempre del mismo lado
+  stratify: true
+
+cross_validation:
+  n_splits: 5
+  shuffle: true
+  random_state: 369
+
+optuna:
+  n_trials_per_classifier: 20
+  seed: 369 # fijo: sin esto, el "mejor" set de hiperparametros cambia de corrida en corrida
+  # sobre exactamente los mismos datos (confirmado en el notebook de referencia)
+
+# Youden's J (sensibilidad + especificidad - 1) sobre el problema binarizado
+# clase 2 (alta sospecha) = positivo, clases 0+1 = negativo -- nunca sensibilidad
+# sola (colapsa a "marcar a todos como positivos").
+scoring:
+  positive_classes: [2]
+
+models_to_compare:
+  - "SVC"
+  - "LogisticRegression"
+  - "RandomForestClassifier"
+  - "XGBClassifier"
+  - "XGBClassifier_balanced" # misma busqueda de hiperparametros que XGBClassifier, unica
+    # diferencia real: sample_weight balanceado (ver BalancedXGBClassifier)
+  - "GradientBoostingClassifier"
+  - "KNeighborsClassifier"

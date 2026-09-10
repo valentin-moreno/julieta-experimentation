@@ -32,8 +32,7 @@ experiments/**/reports/*
 .ruff_cache/
 .pytest_cache/
 pipelines/data/build/.signal_features_cache/
-*/notebooks/nbrun.log
-*/notebooks/nbrun*.log
+**/notebooks/nbrun*.log
 pipelines/data/build/build_run.log
 pipelines/data/build_*_run.log
 

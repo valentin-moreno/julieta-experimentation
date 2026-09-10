@@ -68,6 +68,8 @@ extend-exclude = [
     "src/julieta/utils/logs.py",
     "src/julieta/visualization/visualize.py",
     "pipelines/data/build_training_dataset.py",
+    "experiments/ID03-healthy_model_groupsplit/notebooks/02_healthy_model_experimentos_magphase_groupsplit.ipynb",
+    "experiments/ID03-healthy_model_groupsplit/notebooks/03_healthy_model_experimentos_groupsplit.ipynb",
 ]
 
 [tool.ruff.lint]
