@@ -1,16 +1,24 @@
 import os
 import subprocess
+import tempfile
 from pathlib import Path
 
+import joblib
 import mlflow
 import yaml
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 CONFIG_PATH = REPO_ROOT / "configs" / "mlflow.yaml"
 TRACKING_URI_ENV_VAR = "MLFLOW_TRACKING_URI"
 
-load_dotenv(REPO_ROOT / ".env")
+# dotenv_values() en vez de load_dotenv(): load_dotenv() vuelca TODO .env al
+# entorno global del proceso (os.environ), lo que se filtra a cualquier
+# subprocess que se llame despues (ej. dvc push heredaba
+# AZURE_STORAGE_CONNECTION_STRING de otra cuenta de Azure y DVC la priorizaba
+# sobre az login -- error real, no hipotetico). dotenv_values() solo lee el
+# archivo a un dict local, sin tocar el resto del proceso.
+_DOTENV_VALUES = dotenv_values(REPO_ROOT / ".env")
 
 
 def configure_mlflow(experiment_id: str, experiment_name: str) -> str:
@@ -18,10 +26,11 @@ def configure_mlflow(experiment_id: str, experiment_name: str) -> str:
     and set the active experiment.
 
     Requires the MLFLOW_TRACKING_URI environment variable (see configs/mlflow.yaml
-    for how to obtain it once the Azure ML Workspace exists). Returns the full
-    experiment name that was set, so callers can log it if useful.
+    for how to obtain it once the Azure ML Workspace exists) -- either a real
+    exported env var (ej. un secreto de CI) o definida en `.env` local.
+    Returns the full experiment name that was set, so callers can log it if useful.
     """
-    tracking_uri = os.environ.get(TRACKING_URI_ENV_VAR)
+    tracking_uri = os.environ.get(TRACKING_URI_ENV_VAR) or _DOTENV_VALUES.get(TRACKING_URI_ENV_VAR)
     if not tracking_uri:
         raise RuntimeError(
             f"{TRACKING_URI_ENV_VAR} no está definida. Ver configs/mlflow.yaml "
@@ -61,6 +70,7 @@ def log_run(
     artifacts: list[str] | None = None,
     tags: dict[str, str] | None = None,
     run_name: str | None = None,
+    model: object | None = None,
 ) -> str:
     """Log a complete MLflow run following this repo's convention (ver ADR 0009):
 
@@ -72,7 +82,7 @@ def log_run(
       código exacto que lo generó.
     - `artifacts`: rutas de archivo a subir (plots, modelo entrenado, el
       config usado). **Nunca una muestra cruda de datos sensibles** — ver
-      docs/architecture/data-governance.md, la misma regla que aplica a
+      docs/architecture/data_governance.md, la misma regla que aplica a
       `data/raw` y al remoto de DVC aplica aquí.
 
     Debe llamarse después de que MLFLOW_TRACKING_URI esté configurada. Loguea
@@ -82,6 +92,21 @@ def log_run(
     ML — sin él, MLflow le asigna un nombre aleatorio (ej. "loyal-picture-m0jqptwt")
     que no dice nada sobre qué variante es. Usa el mismo nombre que el archivo de
     `configs/*.yaml` que generó este run (ej. "baseline").
+
+    `model`: un estimador ya entrenado (ej. un `Pipeline` de sklearn), opcional.
+    Si se pasa, queda serializado con `joblib` y subido como artifact -- es la
+    forma de recuperar después el modelo exacto de un run puntual desde la UI
+    de MLflow, en vez de depender de un `.pkl` local sin versionar (ver
+    conclusión de IDXX-healthy_model_groupsplit). No todos los experimentos lo
+    necesitan (ej. ID02 no guardó modelo), por eso es opcional.
+
+    Nota: **no** usa `mlflow.sklearn.log_model` -- esa función, en mlflow>=3,
+    siempre intenta crear una entidad "Logged Model" via
+    `POST /api/2.0/mlflow/logged-models`, un endpoint que el tracking server
+    de Azure ML no implementa (confirmado: 404 real corriendo esto, con
+    `artifact_path` y con `name`, las dos formas de llamarla). `joblib.dump` +
+    `mlflow.log_artifact` logra lo mismo (el modelo queda descargable desde el
+    run) usando solo el logging de artifacts de toda la vida, que sí soporta.
     """
     configure_mlflow(experiment_id, experiment_name)
 
@@ -100,5 +125,10 @@ def log_run(
                 mlflow.log_metric(key, value)
         for artifact_path in artifacts or []:
             mlflow.log_artifact(artifact_path)
+        if model is not None:
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                model_path = Path(tmp_dir) / "model.joblib"
+                joblib.dump(model, model_path)
+                mlflow.log_artifact(str(model_path))
 
         return run.info.run_id
