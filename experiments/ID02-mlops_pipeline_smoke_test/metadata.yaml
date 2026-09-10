@@ -17,8 +17,8 @@ tags:
   - "mlops_platform"
 
 # Datos y Modelo
-dataset_version: "synthetic_v1"
-model_type: "xgboost_classifier"
+dataset_version: "dataset-synthetic_smoke_test-v1"
+model_type: ["xgboost_classifier", "logistic_regression", "random_forest"]
 
 # Métricas
 metrics:
@@ -28,4 +28,4 @@ metrics:
 
 # Objetivo y Resultados
 objective: "Validar de punta a punta el pipeline de MLOps del repo (DVC, MLflow, metadata, resumen de experimentos) con un dataset sintético, sin depender de que exista todavía un experimento de negocio real."
-conclusion: "Pipeline completo funcionando de punta a punta: dvc add/push subió el dataset sintético al remote de Azure Blob, log_run dejó un run real (FINISHED, nombrado 'baseline' en vez del nombre random que asigna MLflow por default) en el workspace ml-salva-dev — experimento 'julieta/ID02-mlops_pipeline_smoke_test', run_id 6d95d186-77f5-436d-adf6-140d0ccbc6a2 — con 16 métricas (8 train + 8 test, incluyendo accuracy y julieta_score), 4 artifacts (confusion matrix y classification report de train y de test), y un reports/report.html autogenerado. julieta-validate/julieta-summary reconocen el experimento sin ajustes. test_roc_auc 0.94 supera el target de 0.85; train_roc_auc 1.0 vs test 0.94 muestra overfitting esperable con XGBoost sin tuning sobre un dataset sintético fácil de separar — no es un problema a resolver aquí, es la clase de señal que este pipeline ya deja ver. Nota: hay 2 runs anteriores en el mismo experimento de Azure ML (iteraciones previas de este mismo smoke test) que quedaron como historial, no se borraron. CI/CD (Azure Pipelines) sigue sin conectar, no se probó aquí."
+conclusion: "Pipeline completo funcionando de punta a punta, ahora comparando 3 clasificadores dentro del mismo experimento: xgboost (run_id d178a55d), logistic_regression (4dced268) y random_forest (c90a94ff) — cada uno su propio run FINISHED en el workspace ml-salva-dev, mismo experimento 'julieta/ID02-mlops_pipeline_smoke_test', mismo train/test split. xgboost gana con test_roc_auc 0.94 (target 0.85), random_forest 0.92, logistic_regression 0.80 — comparación creíble, no forzada. Cada run trae 16 métricas (8 train + 8 test) y 4 artifacts (confusion matrix + classification report de train/test). reports/report.html ahora tiene una sección por run, con las imágenes referenciadas por ruta relativa a results/ (no embebidas en base64 — no duplicar lo que ya vive en local y en MLflow). julieta_validate/julieta_summary reconocen el experimento (model_type ahora es lista). Bug real encontrado y corregido en el camino: julieta.tracking.mlflow_config usaba load_dotenv(), que contaminaba todo el proceso con las variables de .env — un subprocess de dvc push heredaba AZURE_STORAGE_CONNECTION_STRING (de otra cuenta) y DVC la priorizaba sobre az login, fallando con un error engañoso ('no such container'). Corregido a dotenv_values(), con test de regresión. CI/CD (Azure Pipelines) sigue sin conectar, no se probó aquí."

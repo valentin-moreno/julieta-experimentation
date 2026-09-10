@@ -1,4 +1,6 @@
-# Config del smoke test — no hay tuning, es un baseline único para validar el pipeline.
+# Config del smoke test — no hay tuning, es un baseline único por clasificador,
+# para probar el patrón de comparar varios modelos dentro del mismo experimento
+# (cada uno como su propio run en MLflow, ver README).
 
 dataset:
   n_samples: 2000
@@ -12,10 +14,20 @@ split:
   test_size: 0.2
   stratify: true
 
-model:
-  type: "BalancedXGBClassifier"
-  n_estimators: 200
-  max_depth: 4
-  learning_rate: 0.1
-  random_state: 42
-  eval_metric: "logloss"
+models:
+  xgboost:
+    type: "BalancedXGBClassifier"
+    n_estimators: 200
+    max_depth: 4
+    learning_rate: 0.1
+    random_state: 42
+    eval_metric: "logloss"
+  logistic_regression:
+    type: "LogisticRegression"
+    max_iter: 1000
+    random_state: 42
+  random_forest:
+    type: "RandomForestClassifier"
+    n_estimators: 200
+    max_depth: 6
+    random_state: 42
